@@ -2,43 +2,76 @@
 #define RC_ARRAY_HPP
 
 #include <cstddef>
-#include <stdexcept>
+#include <expected>
+#include <memory>
 
 namespace rc
 {
 
-template <typename Data, size_t Size>
+// =============================================================================
+// =============================================================================
+//
+// Declaration of the allocator class.
+//
+// =============================================================================
+// =============================================================================
+template <typename T, size_t N>
 class array
 {
   public:
-    array(Data &&init_value)
-    {
-        for (size_t i = 0; i < Size; i++)
-        {
-            m_data[i] = init_value;
-        }
-    }
+    T &operator[](size_t index);
+    const T &operator[](size_t index) const;
 
-    constexpr size_t size() { return Size; }
+    constexpr size_t size();
 
-    Data &operator[](size_t index)
-    {
-        if (is_index_valid(index)) return m_data[index];
-        throw std::runtime_error{"[rc::array] Index out of range."};
-    }
-
-    const Data &operator[](size_t index) const
-    {
-        if (is_index_valid(index)) return m_data[index];
-        throw std::runtime_error{"[rc::array] Index out of range"};
-    }
+    void fill(T &&value);
 
   protected:
-    bool is_index_valid(size_t index) { return (index >= 0 && index < Size); }
+    bool is_index_valid(size_t index);
 
   private:
-    Data m_data[Size];
+    T m_data[N];
 };
+
+// =============================================================================
+// =============================================================================
+//
+// Definition of the allocator class.
+//
+// =============================================================================
+// =============================================================================
+template <typename T, size_t N>
+T &array<T, N>::operator[](size_t index)
+{
+    if (is_index_valid(index)) return m_data[index];
+    throw std::runtime_error{"[rc::array] Index out of range."};
+}
+
+template <typename T, size_t N>
+const T &array<T, N>::operator[](size_t index) const
+{
+    if (is_index_valid(index)) return m_data[index];
+    throw std::runtime_error{"[rc::array] Index out of range"};
+}
+
+template <typename T, size_t N>
+constexpr size_t array<T, N>::size()
+{
+    return N;
+}
+
+template <typename T, size_t N>
+void array<T, N>::fill(T &&value)
+{
+    for (size_t i = 0; i < N; ++i)
+        m_data[i] = value;
+}
+
+template <typename T, size_t N>
+bool array<T, N>::is_index_valid(size_t index)
+{
+    return (index >= 0 && index < N);
+}
 
 } // namespace rc
 

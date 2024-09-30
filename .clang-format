@@ -6,4 +6,5 @@ AllowShortIfStatementsOnASingleLine: true
 AlwaysBreakTemplateDeclarations: Yes
 IndentCaseLabels: false
 ColumnLimit: 0
+AlignConsecutiveAssignments: true
 ...
