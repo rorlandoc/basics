@@ -34,26 +34,26 @@ class allocator
 // =============================================================================
 // =============================================================================
 template <typename T>
-constexpr T *allocator<T>::allocate(size_t n, const void *)
+T *allocator<T>::allocate(size_t n, const void *)
 {
     return static_cast<T *>(::operator new(n * sizeof(T)));
 }
 
 template <typename T>
-constexpr void allocator<T>::deallocate(T *p, size_t)
+void allocator<T>::deallocate(T *p, size_t)
 {
     ::operator delete(p);
 }
 
 template <typename T>
 template <typename... Args>
-constexpr void allocator<T>::construct(T *p, Args &&...args)
+void allocator<T>::construct(T *p, Args &&...args)
 {
     new (p) T(std::forward<Args>(args)...);
 }
 
 template <typename T>
-constexpr void allocator<T>::destroy(T *p)
+void allocator<T>::destroy(T *p)
 {
     p->~T();
 }

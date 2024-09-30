@@ -2,8 +2,7 @@
 #define RC_ARRAY_HPP
 
 #include <cstddef>
-#include <expected>
-#include <memory>
+#include <stdexcept>
 
 namespace rc
 {

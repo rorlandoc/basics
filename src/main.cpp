@@ -1,12 +1,11 @@
 #include <print>
 
 #include "rc/array.hpp"
+#include "rc/array_dynamic.hpp"
 
 int main()
 {
-    rc::array<double, 10> a;
-    a.fill(0.0);
-
+    rc::array_dynamic<double> a(10, 0.0);
     a[0] = 10.1;
     a[5] = 5.2;
 
