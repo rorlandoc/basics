@@ -2,6 +2,7 @@
 #define RC_ARRAY_DYNAMIC_HPP
 
 #include "rc/allocator.hpp"
+#include "rc/random_access_iterator.hpp"
 
 namespace rc
 {
@@ -17,13 +18,18 @@ template <typename T, typename A = allocator<T>>
 class array_dynamic
 {
   public:
+    using iterator = random_access_iterator<T>;
+
     array_dynamic(size_t n, const T &value = T{});
     ~array_dynamic();
 
-    T &operator[](size_t index);
-    const T &operator[](size_t index) const;
+    T &operator[](size_t index) { return m_data[index]; }
+    const T &operator[](size_t index) const { return m_data[index]; }
 
-    size_t size() const;
+    size_t size() const { return m_size; }
+
+    iterator begin() { return iterator{m_data}; }
+    iterator end() { return iterator{m_data + m_size}; }
 
   private:
     T *m_data;
@@ -57,24 +63,6 @@ array_dynamic<T, A>::~array_dynamic()
         m_allocator.destroy(&m_data[i]);
     }
     m_allocator.deallocate(m_data);
-}
-
-template <typename T, typename A>
-T &array_dynamic<T, A>::operator[](size_t index)
-{
-    return m_data[index];
-}
-
-template <typename T, typename A>
-const T &array_dynamic<T, A>::operator[](size_t index) const
-{
-    return m_data[index];
-}
-
-template <typename T, typename A>
-size_t array_dynamic<T, A>::size() const
-{
-    return m_size;
 }
 
 } // namespace rc

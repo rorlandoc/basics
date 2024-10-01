@@ -2,7 +2,8 @@
 #define RC_ARRAY_HPP
 
 #include <cstddef>
-#include <stdexcept>
+
+#include "rc/random_access_iterator.hpp"
 
 namespace rc
 {
@@ -18,59 +19,19 @@ template <typename T, size_t N>
 class array
 {
   public:
-    T &operator[](size_t index);
-    const T &operator[](size_t index) const;
+    using iterator = random_access_iterator<T>;
 
-    constexpr size_t size();
+    T &operator[](size_t index) { return m_data[index]; }
+    const T &operator[](size_t index) const { return m_data[index]; }
 
-    void fill(T &&value);
+    constexpr size_t size() const noexcept { return N; }
 
-  protected:
-    bool is_index_valid(size_t index);
+    iterator begin() { return iterator{m_data}; }
+    iterator end() { return iterator{m_data + N}; }
 
   private:
     T m_data[N];
 };
-
-// =============================================================================
-// =============================================================================
-//
-// Definition of the allocator class.
-//
-// =============================================================================
-// =============================================================================
-template <typename T, size_t N>
-T &array<T, N>::operator[](size_t index)
-{
-    if (is_index_valid(index)) return m_data[index];
-    throw std::runtime_error{"[rc::array] Index out of range."};
-}
-
-template <typename T, size_t N>
-const T &array<T, N>::operator[](size_t index) const
-{
-    if (is_index_valid(index)) return m_data[index];
-    throw std::runtime_error{"[rc::array] Index out of range"};
-}
-
-template <typename T, size_t N>
-constexpr size_t array<T, N>::size()
-{
-    return N;
-}
-
-template <typename T, size_t N>
-void array<T, N>::fill(T &&value)
-{
-    for (size_t i = 0; i < N; ++i)
-        m_data[i] = value;
-}
-
-template <typename T, size_t N>
-bool array<T, N>::is_index_valid(size_t index)
-{
-    return (index >= 0 && index < N);
-}
 
 } // namespace rc
 
